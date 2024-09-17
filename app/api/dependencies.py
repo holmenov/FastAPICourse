@@ -5,7 +5,7 @@ from typing import Annotated
 
 class PaginationParams(BaseModel):
     page: Annotated[int, Query(1, ge=1, description="Страница автомобилей")]
-    per_page: Annotated[int, Query(5, ge=1, le=100, description="Автомобилей на каждой странице")]
+    per_page: Annotated[int | None, Query(None, ge=1, le=100, description="Автомобилей на каждой странице")]
 
 
 PaginationDep = Annotated[PaginationParams, Depends()]
