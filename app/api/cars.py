@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Body, Query
 
-from schemas.cars import SCars, SCarsPATCH
+from app.api.dependencies import PaginationDep
+from app.schemas.cars import SCars, SCarsPATCH
 
 
 router = APIRouter(
@@ -22,11 +23,10 @@ cars = [
 
 @router.get("", summary="Получить автомобили с заданными параметрами")
 def get_cars(
+        pagination: PaginationDep,
         id: int | None = Query(None, description="ID Автомобиля"),
         mark: str | None = Query(None, description="Название марки"),
         model: str | None = Query(None, description="Название модели"),
-        page: int = Query(1, description="Страница автомобилей"),
-        per_page: int = Query(5, description="Автомобилей на каждой странице"),
 ):
     _cars = []
     for car in cars:
@@ -38,9 +38,8 @@ def get_cars(
             continue
         _cars.append(car)
 
-    start_item = (page - 1) * per_page
-    end_item = page * per_page
-
+    start_item = (pagination.page - 1) * pagination.per_page
+    end_item = pagination.page * pagination.per_page
     return _cars[start_item:end_item]
 
 @router.delete("/{car_id}", summary="Удалить автомобиль")
