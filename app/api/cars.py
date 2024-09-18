@@ -7,7 +7,6 @@ from app.models.cars import CarsORM
 from app.repositories.cars import CarsRepository
 from app.schemas.cars import SCars, SCarsPATCH
 
-
 router = APIRouter(
     prefix="/cars",
     tags=["Автомобили"]
@@ -31,11 +30,10 @@ async def get_cars(
         return {"success": True, "data": data}
 
 @router.delete("/{car_id}", summary="Удалить автомобиль")
-def delete_car(
-        car_id: int
-):
-    global cars
-    cars = [car for car in cars if car["id"] != car_id]
+async def delete_car(car_id: int):
+    async with async_session_maker() as session:
+        await CarsRepository(session).delete(id=car_id)
+        await session.commit()
     return {"success": True}
 
 @router.post("", summary="Добавить автомобиль")
@@ -46,15 +44,10 @@ async def add_car(car_data: SCars = Body()):
     return {"success": True, "data": added_car}
 
 @router.put("/{car_id}", summary="Изменить данные об автомобиле полностью")
-def put_car(
-        car_id: int,
-        mark: str = Body(description="Название марки"),
-        model: str = Body(description="Название модели"),
-):
-    global cars
-    car = [car for car in cars if car["id"] == car_id]
-    car["mark"] = mark
-    car["model"] = model
+async def put_car(car_id: int, car_data: SCars):
+    async with async_session_maker() as session:
+        await CarsRepository(session).edit(car_data, id=car_id)
+        await session.commit()
     return {"success": True}
 
 @router.patch("/{car_id}", summary="Изменить данные об автомобиле частично")
