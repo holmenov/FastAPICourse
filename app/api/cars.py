@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Body, Query
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, func
 
 from app.api.dependencies import PaginationDep
 from app.database import async_session_maker
 from app.models.cars import CarsORM
+from app.repositories.cars import CarsRepository
 from app.schemas.cars import SCars, SCarsPATCH
 
 
@@ -21,18 +22,13 @@ async def get_cars(
 ):
     per_page = pagination.per_page or 5
     async with async_session_maker() as session:
-        query = select(CarsORM)
-        if id:
-            query = query.filter_by(id=id)
-        if mark:
-            query = query.filter_by(mark=mark)
-        query = (
-            query
-            .limit(per_page)
-            .offset((pagination.page - 1) * per_page)
+        data = await CarsRepository(session).get_all(
+            id=id,
+            mark=mark,
+            limit=per_page,
+            offset=(pagination.page - 1) * per_page
         )
-        data = await session.execute(query)
-        return data.scalars().all()
+        return {"success": True, "data": data}
 
 @router.delete("/{car_id}", summary="Удалить автомобиль")
 def delete_car(
@@ -43,21 +39,11 @@ def delete_car(
     return {"success": True}
 
 @router.post("", summary="Добавить автомобиль")
-async def add_car(car_data: SCars = Body(openapi_examples={
-    "1": {
-        "summary": "Toyota",
-        "value": {"mark": "Toyota"}
-    },
-    "2": {
-        "summary": "Nissan",
-        "value": {"mark": "Nissan"}
-    },
-})):
+async def add_car(car_data: SCars = Body()):
     async with async_session_maker() as session:
-        add_car_stmt = insert(CarsORM).values(**car_data.model_dump())
-        await session.execute(add_car_stmt)
+        added_car = await CarsRepository(session).add(car_data)
         await session.commit()
-    return {"success": True}
+    return {"success": True, "data": added_car}
 
 @router.put("/{car_id}", summary="Изменить данные об автомобиле полностью")
 def put_car(
