@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Body, Query
 from sqlalchemy import insert, select, func
+from fastapi.exceptions import HTTPException
 
 from app.api.dependencies import PaginationDep
 from app.database import async_session_maker
@@ -32,8 +33,12 @@ async def get_cars(
 @router.delete("/{car_id}", summary="Удалить автомобиль")
 async def delete_car(car_id: int):
     async with async_session_maker() as session:
-        await CarsRepository(session).delete(id=car_id)
-        await session.commit()
+        car_data = await CarsRepository(session).get_one_or_none(id=car_id)
+        if car_data:
+            await CarsRepository(session).delete(id=car_id)
+            await session.commit()
+        else:
+            raise HTTPException(status_code=404)
     return {"success": True}
 
 @router.post("", summary="Добавить автомобиль")
@@ -46,8 +51,12 @@ async def add_car(car_data: SCars = Body()):
 @router.put("/{car_id}", summary="Изменить данные об автомобиле полностью")
 async def put_car(car_id: int, car_data: SCars):
     async with async_session_maker() as session:
-        await CarsRepository(session).edit(car_data, id=car_id)
-        await session.commit()
+        car_data = await CarsRepository(session).get_one_or_none(id=car_id)
+        if car_data:
+            await CarsRepository(session).edit(car_data, id=car_id)
+            await session.commit()
+        else:
+            raise HTTPException(status_code=404)
     return {"success": True}
 
 @router.patch("/{car_id}", summary="Изменить данные об автомобиле частично")
