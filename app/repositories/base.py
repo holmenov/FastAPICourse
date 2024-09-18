@@ -25,8 +25,12 @@ class BaseRepository:
         data = await self.session.execute(add_data_stmt)
         return data.scalars().one()
 
-    async def edit(self, data: BaseModel, **filter_by) -> None:
-        update_data_stmt = update(self.model).filter_by(**filter_by).values(**data.model_dump())
+    async def edit(self, data: BaseModel, exclude_unset: bool = False, **filter_by) -> None:
+        update_data_stmt = (
+            update(self.model)
+            .filter_by(**filter_by)
+            .values(**data.model_dump(exclude_unset=exclude_unset))
+        )
         await self.session.execute(update_data_stmt)
 
     async def delete(self, **filter_by) -> None:
