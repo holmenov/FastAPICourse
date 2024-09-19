@@ -7,7 +7,7 @@ from app.schemas.users import SUserRequestAdd, SUserAdd
 
 router = APIRouter(
     prefix="/auth",
-    tags=["Авторизация и аунтефикация"]
+    tags=["Авторизация и аутентификация"]
 )
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
