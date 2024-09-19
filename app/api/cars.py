@@ -4,7 +4,7 @@ from fastapi.exceptions import HTTPException
 from app.api.dependencies import PaginationDep
 from app.database import async_session_maker
 from app.repositories.cars import CarsRepository
-from app.schemas.cars import SCars, SCarsPATCH
+from app.schemas.cars import SCarsPATCH, SCarsData
 
 router = APIRouter(
     prefix="/cars",
@@ -44,14 +44,14 @@ async def delete_car(car_id: int):
     return {"success": True}
 
 @router.post("", summary="Добавить автомобиль")
-async def add_car(car_data: SCars = Body()):
+async def add_car(car_data: SCarsData = Body()):
     async with async_session_maker() as session:
         added_car = await CarsRepository(session).add(car_data)
         await session.commit()
     return {"success": True, "data": added_car}
 
 @router.put("/{car_id}", summary="Изменить данные об автомобиле полностью")
-async def edit_car(car_id: int, car_data: SCars):
+async def edit_car(car_id: int, car_data: SCarsData):
     async with async_session_maker() as session:
         car_data = await CarsRepository(session).get_one_or_none(id=car_id)
         if car_data:
