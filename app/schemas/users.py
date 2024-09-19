@@ -8,6 +8,10 @@ class SUserRequestAdd(BaseModel):
     last_name: str | None = Field(None)
     nickname: str
 
+class SUserRequestLogin(BaseModel):
+    email: EmailStr
+    password: str
+
 class SUserAdd(BaseModel):
     email: EmailStr
     hashed_password: str
@@ -23,3 +27,6 @@ class SUser(BaseModel):
     nickname: str
 
     model_config = ConfigDict(from_attributes=True)
+
+class SUserWithHashedPassword(SUser):
+    hashed_password: str

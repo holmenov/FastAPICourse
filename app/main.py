@@ -8,7 +8,6 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from app.api.cars import router as cars_router
 from app.api.auth import router as auth_router
-from app.config import settings
 
 
 app = FastAPI()
