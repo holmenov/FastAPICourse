@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.get("", summary="Получить автомобили с заданными параметрами")
+@router.get("", summary="Получить марки автомобилей с заданными параметрами")
 async def get_cars(
         pagination: PaginationDep,
         mark: str | None = Query(None, description="Название марки"),
@@ -26,13 +26,13 @@ async def get_cars(
         )
         return {"success": True, "data": data}
 
-@router.get("/{car_id}", summary="Получить автомобиль по ID")
+@router.get("/{car_id}", summary="Получить марку автомобиля по ID")
 async def get_car(car_id: int):
     async with async_session_maker() as session:
         car_data = await CarsRepository(session).get_one_or_none(id=car_id)
     return {"success": True, "data": car_data}
 
-@router.delete("/{car_id}", summary="Удалить автомобиль")
+@router.delete("/{car_id}", summary="Удалить марку автомобиля")
 async def delete_car(car_id: int):
     async with async_session_maker() as session:
         car_data = await CarsRepository(session).get_one_or_none(id=car_id)
@@ -43,29 +43,29 @@ async def delete_car(car_id: int):
             raise HTTPException(status_code=404)
     return {"success": True}
 
-@router.post("", summary="Добавить автомобиль")
+@router.post("", summary="Добавить марку автомобиля")
 async def add_car(car_data: SCarsData = Body()):
     async with async_session_maker() as session:
         added_car = await CarsRepository(session).add(car_data)
         await session.commit()
     return {"success": True, "data": added_car}
 
-@router.put("/{car_id}", summary="Изменить данные об автомобиле полностью")
+@router.put("/{car_id}", summary="Изменить данные о марке автомобиля полностью")
 async def edit_car(car_id: int, car_data: SCarsData):
     async with async_session_maker() as session:
-        car_data = await CarsRepository(session).get_one_or_none(id=car_id)
-        if car_data:
+        requsted_car = await CarsRepository(session).get_one_or_none(id=car_id)
+        if requsted_car:
             await CarsRepository(session).edit(car_data, id=car_id)
             await session.commit()
         else:
             raise HTTPException(status_code=404)
     return {"success": True}
 
-@router.patch("/{car_id}", summary="Изменить данные об автомобиле частично")
+@router.patch("/{car_id}", summary="Изменить данные о марке автомобиля частично")
 async def partially_edit_car(car_id: int, car_data: SCarsPATCH):
     async with async_session_maker() as session:
-        car_data = await CarsRepository(session).get_one_or_none(id=car_id)
-        if car_data:
+        requsted_car = await CarsRepository(session).get_one_or_none(id=car_id)
+        if requsted_car:
             await CarsRepository(session).edit(car_data, exclude_unset=True, id=car_id)
             await session.commit()
         else:

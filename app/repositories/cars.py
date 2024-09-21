@@ -10,9 +10,9 @@ class CarsRepository(BaseRepository):
     schema = SCars
 
     async def get_all(self, mark, limit, offset) -> list[SCars]:
-        query = select(CarsORM)
+        query = select(self.model)
         if mark:
-            query = query.filter(func.lower(CarsORM.mark) == mark.strip().lower())
+            query = query.filter(func.lower(self.model.mark) == mark.strip().lower())
         query = (query.limit(limit).offset(offset))
         data = await self.session.execute(query)
         return [
