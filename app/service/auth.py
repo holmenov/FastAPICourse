@@ -35,3 +35,7 @@ class AuthService:
             )
         except jwt.exceptions.DecodeError:
             raise HTTPException(status_code=401, detail="Неверный формат токена авторизации")
+        except jwt.exceptions.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail="Токен авторизации просрочен")
+        except jwt.exceptions.InvalidTokenError:
+            raise HTTPException(status_code=401, detail="Неверный токен авторизации")
