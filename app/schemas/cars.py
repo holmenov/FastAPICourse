@@ -10,5 +10,5 @@ class SCars(SCarsData):
 
     model_config = ConfigDict(from_attributes=True)
 
-class SCarsPATCH(BaseModel):
-    mark: str | None = Field(None)
+class SCarsPatch(BaseModel):
+    mark: str | None = None

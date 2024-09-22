@@ -2,7 +2,9 @@ from fastapi import Depends, Query, Request, HTTPException
 from pydantic import BaseModel
 from typing import Annotated
 
+from app.database import async_session_maker
 from app.service.auth import AuthService
+from app.utils.db_manager import DBManager
 
 
 class PaginationParams(BaseModel):
@@ -18,8 +20,18 @@ def get_token(request: Request) -> str:
         raise HTTPException(status_code=401, detail="Вы не аутентифицированы.")
     return access_token
 
+
 def get_current_user_id(access_token: str = Depends(get_token)) -> int:
     token_data = AuthService().decode_token(access_token)
     return token_data.get("user_id")
 
-UserIdDep = Annotated[PaginationParams, Depends(get_current_user_id)]
+
+UserIdDep = Annotated[int, Depends(get_current_user_id)]
+
+
+async def get_db() -> DBManager:
+    async with DBManager(session_factory=async_session_maker) as db:
+        yield db
+
+
+DBDep = Annotated[DBManager, Depends(get_db)]

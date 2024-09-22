@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Body, Query
 from fastapi.exceptions import HTTPException
+from httpx import request
 
-from app.api.dependencies import PaginationDep
+from app.api.dependencies import PaginationDep, DBDep
 from app.database import async_session_maker
 from app.repositories.car_models import CarModelsRepository
-from app.repositories.cars import CarsRepository
-from app.schemas.car_models import SCarModelsData, SCarModelsPATCH
-from app.schemas.cars import SCarsPATCH, SCarsData
+from app.schemas.car_models import SCarModelsData, SCarModelsPatch, SCarModelsAddRequest, SCarModelsPatchRequest
 
 router = APIRouter(
     prefix="/cars",
@@ -17,63 +16,66 @@ router = APIRouter(
 @router.get("/{mark_name}/models", summary="Получить автомобили с заданными параметрами")
 async def get_car_models(
         pagination: PaginationDep,
+        db: DBDep,
         mark_name: str,
         car_model_name: str | None = Query(None, description="Название модели"),
         car_model_year: int | None = Query(None, description="Год автомобиля"),
 ):
     per_page = pagination.per_page or 5
-    async with async_session_maker() as session:
-        data = await CarModelsRepository(session).get_all(
-            car_mark_name=mark_name,
-            car_model_name=car_model_name,
-            car_model_year=car_model_year,
-            limit=per_page,
-            offset=(pagination.page - 1) * per_page
-        )
-        return {"success": True, "data": data}
+    data = await db.car_models.get_all(
+        car_mark_name=mark_name,
+        car_model_name=car_model_name,
+        car_model_year=car_model_year,
+        limit=per_page,
+        offset=(pagination.page - 1) * per_page
+    )
+    return {"success": True, "data": data}
 
-@router.get("/models/{model_id}", summary="Получить автомобиль по ID")
-async def get_car_model(model_id: int):
-    async with async_session_maker() as session:
-        car_data = await CarModelsRepository(session).get_one_or_none(id=model_id)
+
+@router.get("/{mark_name}/models/{model_id}", summary="Получить автомобиль по ID")
+async def get_car_model(db: DBDep, mark_name: str, model_id: int):
+    car_data = await db.car_models.get_one_or_none(id=model_id, car_mark_name=mark_name)
     return {"success": True, "data": car_data}
 
-@router.delete("/models/{car_id}", summary="Удалить автомобиль")
-async def delete_car(car_id: int):
-    async with async_session_maker() as session:
-        car_data = await CarModelsRepository(session).get_one_or_none(id=car_id)
-        if car_data:
-            await CarModelsRepository(session).delete(id=car_id)
-            await session.commit()
-        else:
-            raise HTTPException(status_code=404)
+
+@router.delete("/{mark_name}/models/{car_id}", summary="Удалить автомобиль")
+async def delete_car(db: DBDep, mark_name: str, car_id: int):
+    car_data = await db.car_models.get_one_or_none(id=car_id, car_mark_name=mark_name)
+    if car_data:
+        await db.car_models.delete(id=car_id, car_mark_name=mark_name)
+    else:
+        raise HTTPException(status_code=404)
+    await db.commit()
     return {"success": True}
 
-@router.post("/models", summary="Добавить автомобиль")
-async def add_car_model(car_data: SCarModelsData = Body()):
-    async with async_session_maker() as session:
-        added_car = await CarModelsRepository(session).add(car_data)
-        await session.commit()
+
+@router.post("/{mark_name}/models", summary="Добавить автомобиль")
+async def add_car_model(mark_name: str, car_data: SCarModelsAddRequest = Body()):
+    _car_data = SCarModelsData(car_mark_name=mark_name, **car_data.model_dump())
+    added_car = await db.car_models.add(_car_data)
+    await db.commit()
     return {"success": True, "data": added_car}
 
-@router.put("/models/{car_id}", summary="Изменить данные об автомобиле полностью")
-async def edit_car(car_id: int, car_data: SCarModelsData):
-    async with async_session_maker() as session:
-        requsted_car = await CarModelsRepository(session).get_one_or_none(id=car_id)
-        if requsted_car:
-            await CarModelsRepository(session).edit(car_data, id=car_id)
-            await session.commit()
-        else:
-            raise HTTPException(status_code=404)
+
+@router.put("/{mark_name}/models/{car_id}", summary="Изменить данные об автомобиле полностью")
+async def edit_car(mark_name: str, car_id: int, car_data: SCarModelsAddRequest):
+    _car_data = SCarModelsData(car_mark_name=mark_name, **car_data.model_dump())
+    requsted_car = await db.car_models.get_one_or_none(id=car_id, car_mark_name=mark_name)
+    if requsted_car:
+        await db.car_models.edit(_car_data, id=car_id, car_mark_name=mark_name)
+    else:
+        raise HTTPException(status_code=404)
+    await db.commit()
     return {"success": True}
 
-@router.patch("/models/{car_id}", summary="Изменить данные об автомобиле частично")
-async def partially_edit_car(car_id: int, car_data: SCarModelsPATCH):
-    async with async_session_maker() as session:
-        requsted_car = await CarModelsRepository(session).get_one_or_none(id=car_id)
-        if requsted_car:
-            await CarModelsRepository(session).edit(car_data, exclude_unset=True, id=car_id)
-            await session.commit()
-        else:
-            raise HTTPException(status_code=404)
+
+@router.patch("/{mark_name}/models/{car_id}", summary="Изменить данные об автомобиле частично")
+async def partially_edit_car(mark_name: str, car_id: int, car_data: SCarModelsPatchRequest):
+    _car_data = SCarModelsPatch(car_mark_name=mark_name, **car_data.model_dump(exclude_unset=True))
+    requsted_car = await db.car_models.get_one_or_none(id=car_id, car_mark_name=mark_name)
+    if requsted_car:
+        await db.car_models.edit(_car_data, id=car_id, car_mark_name=mark_name)
+    else:
+        raise HTTPException(status_code=404)
+    await db.commit()
     return {"success": True}
