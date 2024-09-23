@@ -9,7 +9,7 @@ class SCarModelsData(BaseModel):
     price: int
 
 class SCarModelsAddRequest(BaseModel):
-    car_mark_name: str
+    car_model_name: str
     car_model_year: int
     description: str
     price: int
