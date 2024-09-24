@@ -2,6 +2,9 @@ from app.repositories.car_models import CarModelsRepository
 from app.repositories.cars import CarsRepository
 from app.repositories.users import UsersRepository
 from app.repositories.bookings import BookingsRepository
+from app.repositories.features import FeaturesRepository
+from app.repositories.cars_features import CarsFeaturesRepository
+
 
 
 class DBManager:
@@ -15,6 +18,8 @@ class DBManager:
         self.car_models = CarModelsRepository(self.session)
         self.users = UsersRepository(self.session)
         self.bookings = BookingsRepository(self.session)
+        self.features = FeaturesRepository(self.session)
+        self.cars_features = CarsFeaturesRepository(self.session)
 
         return self
 
