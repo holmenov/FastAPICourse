@@ -83,11 +83,13 @@ async def edit_car(mark_name: str, car_id: int, db: DBDep, car_data: SCarModelsA
 
 @router.patch("/{mark_name}/models/{car_id}", summary="Изменить данные об автомобиле частично")
 async def partially_edit_car(mark_name: str, car_id: int, db: DBDep, car_data: SCarModelsPatchRequest):
-    _car_data = SCarModelsPatch(car_mark_name=mark_name, **car_data.model_dump(exclude_unset=True))
+    _car_data_dict = car_data.model_dump(exclude_unset=True)
+    _car_data = SCarModelsPatch(car_mark_name=mark_name, **_car_data_dict)
     requsted_car = await db.car_models.get_one_or_none(id=car_id, car_mark_name=mark_name)
     if requsted_car:
-        await db.cars_features.update_features_bulk(car_id, car_data.features)
-        await db.car_models.edit(_car_data, exclude_unset=True, id=car_id, car_mark_name=mark_name)
+        if "features" in _car_data_dict:
+            await db.cars_features.update_features_bulk(car_id, car_data.features, exclude_unset=True)
+        await db.car_models.edit(_car_data, id=car_id, car_mark_name=mark_name, exclude_unset=True)
     else:
         raise HTTPException(status_code=404)
     await db.commit()
