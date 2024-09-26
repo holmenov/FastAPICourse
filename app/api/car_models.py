@@ -6,6 +6,7 @@ from app.api.dependencies import PaginationDep, DBDep
 from app.database import async_session_maker
 from app.repositories.car_models import CarModelsRepository
 from app.schemas.car_models import SCarModelsData, SCarModelsPatch, SCarModelsAddRequest, SCarModelsPatchRequest
+from app.schemas.features import SCarsFeaturesData
 
 router = APIRouter(
     prefix="/cars",
@@ -54,9 +55,15 @@ async def delete_car(db: DBDep, mark_name: str, car_id: int):
 
 
 @router.post("/{mark_name}/models", summary="Добавить автомобиль")
-async def add_car_model(mark_name: str, db: DBDep, car_data: SCarModelsAddRequest = Body()):
+async def add_car_model(
+        mark_name: str,
+        db: DBDep,
+        car_data: SCarModelsAddRequest = Body(),
+):
     _car_data = SCarModelsData(car_mark_name=mark_name, **car_data.model_dump())
     added_car = await db.car_models.add(_car_data)
+    features = [SCarsFeaturesData(car_id=added_car.id, feature_id=f_id) for f_id in car_data.features]
+    await db.cars_features.add_bulk(features)
     await db.commit()
     return {"success": True, "data": added_car}
 
@@ -66,6 +73,7 @@ async def edit_car(mark_name: str, car_id: int, db: DBDep, car_data: SCarModelsA
     _car_data = SCarModelsData(car_mark_name=mark_name, **car_data.model_dump())
     requsted_car = await db.car_models.get_one_or_none(id=car_id, car_mark_name=mark_name)
     if requsted_car:
+        await db.cars_features.update_features_bulk(car_id, car_data.features)
         await db.car_models.edit(_car_data, id=car_id, car_mark_name=mark_name)
     else:
         raise HTTPException(status_code=404)
@@ -78,7 +86,8 @@ async def partially_edit_car(mark_name: str, car_id: int, db: DBDep, car_data: S
     _car_data = SCarModelsPatch(car_mark_name=mark_name, **car_data.model_dump(exclude_unset=True))
     requsted_car = await db.car_models.get_one_or_none(id=car_id, car_mark_name=mark_name)
     if requsted_car:
-        await db.car_models.edit(_car_data, id=car_id, car_mark_name=mark_name)
+        await db.cars_features.update_features_bulk(car_id, car_data.features)
+        await db.car_models.edit(_car_data, exclude_unset=True, id=car_id, car_mark_name=mark_name)
     else:
         raise HTTPException(status_code=404)
     await db.commit()

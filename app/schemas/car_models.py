@@ -13,6 +13,7 @@ class SCarModelsAddRequest(BaseModel):
     car_model_year: int
     description: str
     price: int
+    features: list[int] = []
 
 class SCarModels(SCarModelsData):
     id: int
@@ -31,3 +32,4 @@ class SCarModelsPatchRequest(BaseModel):
     car_model_year: int | None = None
     description: str | None = None
     price: int | None = None
+    features: list[int] = []

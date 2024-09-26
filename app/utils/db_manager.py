@@ -2,9 +2,7 @@ from app.repositories.car_models import CarModelsRepository
 from app.repositories.cars import CarsRepository
 from app.repositories.users import UsersRepository
 from app.repositories.bookings import BookingsRepository
-from app.repositories.features import FeaturesRepository
-from app.repositories.cars_features import CarsFeaturesRepository
-
+from app.repositories.features import FeaturesRepository, CarsFeaturesRepository
 
 
 class DBManager:
