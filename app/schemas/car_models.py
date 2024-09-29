@@ -1,5 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 
+from app.schemas.features import SFeatures
+
 
 class SCarModelsData(BaseModel):
     car_mark_name: str
@@ -19,6 +21,9 @@ class SCarModels(SCarModelsData):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+class ScarsWithRels(SCarModels):
+    features: list[SFeatures]
 
 class SCarModelsPatch(BaseModel):
     car_mark_name: str | None = None

@@ -25,7 +25,7 @@ async def get_cars_rent(
         date_to: date = Query(None, description="Дата окончания", example="2024-09-10"),
 ):
     per_page = pagination.per_page or 5
-    data = await db.car_models.get_filtred_by_time(
+    data = await db.car_models.get_filtered_by_time(
         mark_name=mark_name,
         car_model_name=car_model_name,
         car_model_year=car_model_year,

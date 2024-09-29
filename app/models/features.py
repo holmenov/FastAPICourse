@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, ForeignKey
 
 from app.database import Base
@@ -9,6 +9,11 @@ class FeaturesORM(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(50), unique=True)
+
+    car_models: Mapped[list["CarModelsORM"]] = relationship(
+        back_populates="features",
+        secondary="cars_features"
+    )
 
 
 class CarsFeaturesORM(Base):
