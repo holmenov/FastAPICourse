@@ -16,6 +16,17 @@ class CarModelsRepository(BaseRepository):
     model = CarModelsORM
     schema = SCarModels
 
+    async def get_one_or_none(self, **filter_by):
+        query = (
+            select(self.model)
+            .options(selectinload(self.model.features))
+            .filter_by(**filter_by)
+        )
+        data = await self.session.execute(query)
+        model = data.scalars().one_or_none()
+        if model is None:
+            return None
+        return ScarsWithRels.model_validate(model, from_attributes=True)
 
     async def get_filtered_by_time(
             self,

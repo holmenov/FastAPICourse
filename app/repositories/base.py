@@ -1,9 +1,7 @@
 from pydantic import BaseModel
 from sqlalchemy import select, insert, delete, update
-from sqlalchemy.orm import selectinload
 
 from app.database import async_session_maker, engine
-from app.schemas.car_models import ScarsWithRels
 
 
 class BaseRepository:
@@ -22,17 +20,12 @@ class BaseRepository:
         ]
 
     async def get_one_or_none(self, **filter_by):
-        query = (
-            select(self.model)
-            .options(selectinload(self.model.features))
-            .filter_by(**filter_by)
-        )
+        query = select(self.model).filter_by(**filter_by)
         data = await self.session.execute(query)
         model = data.scalars().one_or_none()
         if model is None:
             return None
-        return ScarsWithRels.model_validate(model, from_attributes=True)
-        #return self.schema.model_validate(model, from_attributes=True)
+        return self.schema.model_validate(model, from_attributes=True)
 
     async def get_all_filtered(self, *filter, **filter_by):
         query = (
