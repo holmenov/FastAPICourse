@@ -1,20 +1,18 @@
-from sqlalchemy import select, func, or_
+from sqlalchemy import select
 from datetime import date
 
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import selectinload
 
-from app.database import engine
-from app.models.bookings import BookingsORM
 from app.models.car_models import CarModelsORM
 from app.repositories.base import BaseRepository
-from app.repositories.cars import CarsRepository
+from app.repositories.mappers.base import DataMapper
+from app.repositories.mappers.mappers import CarModelsDataMapper, CarsWithRelsMapper
 from app.repositories.utils import get_unbooked_cars_ids
-from app.schemas.car_models import SCarModels, ScarsWithRels
 
 
 class CarModelsRepository(BaseRepository):
     model = CarModelsORM
-    schema = SCarModels
+    mapper: DataMapper = CarModelsDataMapper
 
     async def get_one_or_none(self, **filter_by):
         query = (
@@ -26,7 +24,7 @@ class CarModelsRepository(BaseRepository):
         model = data.scalars().one_or_none()
         if model is None:
             return None
-        return ScarsWithRels.model_validate(model, from_attributes=True)
+        return CarsWithRelsMapper.map_to_domain_entity(model)
 
     async def get_filtered_by_time(
             self,
@@ -50,8 +48,4 @@ class CarModelsRepository(BaseRepository):
             .filter(self.model.id.in_(unbooked_cars_ids))
         )
         result = await self.session.execute(query)
-        return [
-            ScarsWithRels.model_validate(
-                model, from_attributes=True
-            ) for model in result.scalars().all()
-        ]
+        return [CarsWithRelsMapper.map_to_domain_entity(model) for model in result.scalars().all()]

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class SFeaturesData(BaseModel):
@@ -8,8 +8,6 @@ class SFeaturesData(BaseModel):
 class SFeatures(SFeaturesData):
     id: int
 
-    model_config = ConfigDict(from_attributes=True)
-
 
 class SCarsFeaturesData(BaseModel):
     car_id: int
@@ -18,5 +16,3 @@ class SCarsFeaturesData(BaseModel):
 
 class SCarsFeatures(SCarsFeaturesData):
     id: int
-
-    model_config = ConfigDict(from_attributes=True)

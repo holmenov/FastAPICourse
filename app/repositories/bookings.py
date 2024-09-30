@@ -1,10 +1,9 @@
-from sqlalchemy import select, func
-
 from app.models.bookings import BookingsORM
 from app.repositories.base import BaseRepository
-from app.schemas.bookings import SBookings
+from app.repositories.mappers.base import DataMapper
+from app.repositories.mappers.mappers import BookingsDataMapper
 
 
 class BookingsRepository(BaseRepository):
     model = BookingsORM
-    schema = SBookings
+    mapper: DataMapper = BookingsDataMapper

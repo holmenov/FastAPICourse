@@ -1,16 +1,17 @@
 from app.models.features import FeaturesORM, CarsFeaturesORM
 from app.repositories.base import BaseRepository
+from app.repositories.mappers.base import DataMapper
+from app.repositories.mappers.mappers import FeaturesDataMapper, CarFeaturesDataMapper
 from app.schemas.features import SFeatures, SCarsFeatures, SCarsFeaturesData
 
 
 class FeaturesRepository(BaseRepository):
     model = FeaturesORM
-    schema = SFeatures
-
+    mapper: DataMapper = FeaturesDataMapper
 
 class CarsFeaturesRepository(BaseRepository):
     model = CarsFeaturesORM
-    schema = SCarsFeatures
+    mapper: DataMapper = CarFeaturesDataMapper
 
     async def update_features_bulk(self, car_id: int, features_ids: list):
         current_features_row = await self.get_all_filtered(car_id=car_id)
