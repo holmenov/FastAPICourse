@@ -1,3 +1,5 @@
+from asyncio import timeout
+from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Body, Query
 from fastapi.exceptions import HTTPException
 from datetime import date
@@ -8,6 +10,7 @@ from app.repositories.car_models import CarModelsRepository
 from app.schemas.car_models import SCarModelsData, SCarModelsPatch, SCarModelsAddRequest, SCarModelsPatchRequest
 from app.schemas.features import SCarsFeaturesData
 
+
 router = APIRouter(
     prefix="/cars",
     tags=["Автомобили"]
@@ -15,6 +18,7 @@ router = APIRouter(
 
 
 @router.get("/models/rent", summary="Получить свободные автомобили для аренды")
+@cache(expire=60)
 async def get_cars_rent(
         pagination: PaginationDep,
         db: DBDep,
@@ -38,6 +42,7 @@ async def get_cars_rent(
 
 
 @router.get("/{mark_name}/models/{model_id}", summary="Получить автомобиль по ID")
+@cache(expire=60)
 async def get_car_model(db: DBDep, mark_name: str, model_id: int):
     car_data = await db.car_models.get_one_or_none(id=model_id, car_mark_name=mark_name)
     return {"success": True, "data": car_data}

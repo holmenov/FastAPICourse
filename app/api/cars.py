@@ -1,3 +1,4 @@
+from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Body, Query
 from fastapi.exceptions import HTTPException
 
@@ -11,6 +12,7 @@ router = APIRouter(
 
 
 @router.get("", summary="Получить марки автомобилей с заданными параметрами")
+@cache(expire=60)
 async def get_cars(
         pagination: PaginationDep,
         db: DBDep,
@@ -26,6 +28,7 @@ async def get_cars(
 
 
 @router.get("/{car_id}", summary="Получить марку автомобиля по ID")
+@cache(expire=60)
 async def get_car(car_id: int, db: DBDep):
     car_data = await db.cars.get_one_or_none(id=car_id)
     return {"success": True, "data": car_data}

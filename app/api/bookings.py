@@ -1,3 +1,4 @@
+from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Body
 from fastapi.exceptions import HTTPException
 
@@ -12,12 +13,14 @@ router = APIRouter(
 
 
 @router.get("", summary="Получить все бронирования")
+@cache(expire=10)
 async def get_bookings(db: DBDep):
     bookings = await db.bookings.get_all()
     return {"success": True, "data": bookings}
 
 
 @router.get("/me", summary="Получить свои бронирования")
+@cache(expire=10)
 async def get_self_bookings(db: DBDep, user_id: UserIdDep):
     bookings = await db.bookings.get_one_or_none(user_id=user_id)
     return {"success": True, "data": bookings}
