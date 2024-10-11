@@ -1,4 +1,6 @@
 from asyncio import timeout
+from tkinter.scrolledtext import example
+
 from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Body, Query
 from fastapi.exceptions import HTTPException
@@ -22,11 +24,11 @@ router = APIRouter(
 async def get_cars_rent(
         pagination: PaginationDep,
         db: DBDep,
-        mark_name: str | None = Query(None, description="Название модели", example="Toyota"),
-        car_model_name: str | None = Query(None, description="Название модели", example="Land Cruiser"),
-        car_model_year: int | None = Query(None, description="Год автомобиля", example="2015"),
-        date_from: date = Query(None, description="Дата начала", example="2024-09-01"),
-        date_to: date = Query(None, description="Дата окончания", example="2024-09-10"),
+        mark_name: str | None = Query(None, description="Название модели", examples="Toyota"),
+        car_model_name: str | None = Query(None, description="Название модели", examples="Land Cruiser"),
+        car_model_year: int | None = Query(None, description="Год автомобиля", examples="2015"),
+        date_from: date = Query(None, description="Дата начала", examples="2024-09-01"),
+        date_to: date = Query(None, description="Дата окончания", examples="2024-09-10"),
 ):
     per_page = pagination.per_page or 5
     data = await db.car_models.get_filtered_by_time(
@@ -67,8 +69,9 @@ async def add_car_model(
 ):
     _car_data = SCarModelsData(car_mark_name=mark_name, **car_data.model_dump())
     added_car = await db.car_models.add(_car_data)
-    features = [SCarsFeaturesData(car_id=added_car.id, feature_id=f_id) for f_id in car_data.features]
-    await db.cars_features.add_bulk(features)
+    if car_data.features:
+        features = [SCarsFeaturesData(car_id=added_car.id, feature_id=f_id) for f_id in car_data.features]
+        await db.cars_features.add_bulk(features)
     await db.commit()
     return {"success": True, "data": added_car}
 

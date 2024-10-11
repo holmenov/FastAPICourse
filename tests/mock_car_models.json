@@ -1,0 +1,37 @@
+[
+    {
+        "car_mark_name": "Toyota",
+        "car_model_name": "Land Cruiser",
+        "car_model_year": 2015,
+        "description": "Off-road SUV",
+        "price": 50000
+    },
+    {
+        "car_mark_name": "Mercedes",
+        "car_model_name": "S-Class",
+        "car_model_year": 2020,
+        "description": "Luxury sedan",
+        "price": 120000
+    },
+    {
+        "car_mark_name": "BMW",
+        "car_model_name": "X5",
+        "car_model_year": 2018,
+        "description": "Mid-size luxury SUV",
+        "price": 75000
+    },
+    {
+        "car_mark_name": "Audi",
+        "car_model_name": "A8",
+        "car_model_year": 2021,
+        "description": "Executive luxury sedan",
+        "price": 95000
+    },
+    {
+        "car_mark_name": "Tesla",
+        "car_model_name": "Model S",
+        "car_model_year": 2022,
+        "description": "Electric performance sedan",
+        "price": 85000
+    }
+]

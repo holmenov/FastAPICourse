@@ -1,10 +1,9 @@
 from fastapi_cache.decorator import cache
-from fastapi import APIRouter, Body, Query, Response
+from fastapi import APIRouter, Body, Query
 from fastapi.exceptions import HTTPException
 
 from app.api.dependencies import PaginationDep, DBDep
 from app.schemas.cars import SCarsPatch, SCarsData
-from app.utils.wrappers import data_cache
 
 router = APIRouter(
     prefix="/cars",
@@ -13,9 +12,8 @@ router = APIRouter(
 
 
 @router.get("", summary="Получить марки автомобилей с заданными параметрами")
-@data_cache(exp=60)
+@cache(expire=60)
 async def get_cars(
-        response: Response,
         pagination: PaginationDep,
         db: DBDep,
         mark: str | None = Query(None, description="Название марки"),
