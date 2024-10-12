@@ -12,7 +12,7 @@ router = APIRouter(
 
 
 @router.get("", summary="Получить марки автомобилей с заданными параметрами")
-@cache(expire=60)
+# @cache(expire=60)
 async def get_cars(
         pagination: PaginationDep,
         db: DBDep,

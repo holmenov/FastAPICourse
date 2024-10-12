@@ -12,7 +12,7 @@ router = APIRouter(
 
 
 @router.get("", summary="Получить все особенности автомобилей")
-@cache(expire=60)
+# @cache(expire=60)
 async def get_facilities(db: DBDep):
     features = await db.features.get_all()
     return {"success": True, "data": features}
