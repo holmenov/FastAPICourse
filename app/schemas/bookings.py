@@ -3,9 +3,9 @@ from datetime import date
 
 
 class SBookingsAddRequest(BaseModel):
+    car_id: int
     date_from: date
     date_to: date
-    car_id: int
 
 
 class SBookingsAdd(SBookingsAddRequest):

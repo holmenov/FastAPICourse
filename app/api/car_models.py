@@ -19,7 +19,7 @@ router = APIRouter(
 )
 
 
-@router.get("/models/rent", summary="Получить свободные автомобили для аренды")
+@router.get("", summary="Получить свободные автомобили для аренды")
 @cache(expire=60)
 async def get_cars_rent(
         pagination: PaginationDep,
