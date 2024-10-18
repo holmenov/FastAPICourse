@@ -24,7 +24,7 @@ async def get_bookings(db: DBDep):
 @router.get("/me", summary="Получить свои бронирования")
 @cache(expire=10)
 async def get_self_bookings(db: DBDep, user_id: UserIdDep):
-    bookings = await db.bookings.get_one_or_none(user_id=user_id)
+    bookings = await db.bookings.get_all(user_id=user_id)
     return {"success": True, "data": bookings}
 
 

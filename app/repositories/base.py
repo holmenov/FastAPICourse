@@ -58,3 +58,7 @@ class BaseRepository:
             .filter(*filter)
         )
         await self.session.execute(delete_data_stmt)
+    
+    async def drop_all(self):
+        delete_stmt = delete(self.model)
+        await self.session.execute(delete_stmt)
