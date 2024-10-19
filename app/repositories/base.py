@@ -25,11 +25,7 @@ class BaseRepository:
         return self.mapper.map_to_domain_entity(model)
 
     async def get_all_filtered(self, *filter, **filter_by):
-        query = (
-            select(self.model)
-            .filter(*filter)
-            .filter_by(**filter_by)
-        )
+        query = select(self.model).filter(*filter).filter_by(**filter_by)
         result = await self.session.execute(query)
         return [self.mapper.map_to_domain_entity(model) for model in result.scalars().all()]
 
@@ -52,13 +48,9 @@ class BaseRepository:
         await self.session.execute(update_data_stmt)
 
     async def delete(self, *filter, **filter_by) -> None:
-        delete_data_stmt = (
-            delete(self.model)
-            .filter_by(**filter_by)
-            .filter(*filter)
-        )
+        delete_data_stmt = delete(self.model).filter_by(**filter_by).filter(*filter)
         await self.session.execute(delete_data_stmt)
-    
+
     async def drop_all(self):
         delete_stmt = delete(self.model)
         await self.session.execute(delete_stmt)

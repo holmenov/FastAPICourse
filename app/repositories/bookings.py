@@ -11,16 +11,17 @@ from app.repositories.mappers.mappers import BookingsDataMapper
 class BookingsRepository(BaseRepository):
     model = BookingsORM
     mapper: DataMapper = BookingsDataMapper
-    
+
     async def get_filtered_by_time(self, car_id: int, date_from: date, date_to: date):
-        conditions = (and_(self.model.car_id == car_id),
+        conditions = (
+            and_(self.model.car_id == car_id),
             not_(
                 or_(
                     self.model.date_to <= date_from,
                     self.model.date_from >= date_to,
                     self.model.date_to.is_(None),
                 )
-            )
+            ),
         )
         query = select(self.model).filter(*conditions)
 

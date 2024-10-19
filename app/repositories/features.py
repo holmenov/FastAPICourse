@@ -9,6 +9,7 @@ class FeaturesRepository(BaseRepository):
     model = FeaturesORM
     mapper: DataMapper = FeaturesDataMapper
 
+
 class CarsFeaturesRepository(BaseRepository):
     model = CarsFeaturesORM
     mapper: DataMapper = CarFeaturesDataMapper
@@ -24,5 +25,7 @@ class CarsFeaturesRepository(BaseRepository):
             await self.delete(self.model.feature_id.in_(features_to_remove), car_id=car_id)
 
         if features_to_add:
-            new_features_row = [SCarsFeaturesData(car_id=car_id, feature_id=f_id) for f_id in features_to_add]
+            new_features_row = [
+                SCarsFeaturesData(car_id=car_id, feature_id=f_id) for f_id in features_to_add
+            ]
             await self.add_bulk(new_features_row)

@@ -36,5 +36,7 @@ def data_cache(exp: int = 0):
                 }
                 response.headers.update(headers_cache)
                 return data
+
         return wrapper
+
     return decorator

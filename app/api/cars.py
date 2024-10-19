@@ -5,25 +5,18 @@ from fastapi.exceptions import HTTPException
 from app.api.dependencies import PaginationDep, DBDep
 from app.schemas.cars import SCarsPatch, SCarsData
 
-router = APIRouter(
-    prefix="/cars",
-    tags=["Марки автомобилей"]
-)
+router = APIRouter(prefix="/cars", tags=["Марки автомобилей"])
 
 
 @router.get("", summary="Получить марки автомобилей с заданными параметрами")
 @cache(expire=60)
 async def get_cars(
-        pagination: PaginationDep,
-        db: DBDep,
-        mark: str | None = Query(None, description="Название марки"),
+    pagination: PaginationDep,
+    db: DBDep,
+    mark: str | None = Query(None, description="Название марки"),
 ):
     per_page = pagination.per_page or 5
-    data = await db.cars.get_all(
-        mark=mark,
-        limit=per_page,
-        offset=(pagination.page - 1) * per_page
-    )
+    data = await db.cars.get_all(mark=mark, limit=per_page, offset=(pagination.page - 1) * per_page)
     return {"success": True, "data": data}
 
 

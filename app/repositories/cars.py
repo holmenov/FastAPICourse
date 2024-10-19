@@ -15,6 +15,6 @@ class CarsRepository(BaseRepository):
         query = select(self.model)
         if mark:
             query = query.filter(func.lower(self.model.mark) == mark.strip().lower())
-        query = (query.limit(limit).offset(offset))
+        query = query.limit(limit).offset(offset)
         data = await self.session.execute(query)
         return [self.mapper.map_to_domain_entity(car) for car in data.scalars().all()]

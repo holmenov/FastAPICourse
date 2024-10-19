@@ -15,8 +15,7 @@ class FeaturesORM(Base):
     title: Mapped[str] = mapped_column(String(50), unique=True)
 
     car_models: Mapped[list["CarModelsORM"]] = relationship(
-        back_populates="features",
-        secondary="cars_features"
+        back_populates="features", secondary="cars_features"
     )
 
 

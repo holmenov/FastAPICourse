@@ -6,13 +6,13 @@ from app.models.car_models import CarModelsORM
 
 
 def get_unbooked_cars_ids(
-        mark_name: str | None,
-        car_model_name: str | None,
-        car_model_year: int | None,
-        date_from: date,
-        date_to: date,
-        limit: int,
-        offset: int,
+    mark_name: str | None,
+    car_model_name: str | None,
+    car_model_year: int | None,
+    date_from: date,
+    date_to: date,
+    limit: int,
+    offset: int,
 ):
     all_booked_cars = (
         select(CarModelsORM, BookingsORM.date_from, BookingsORM.date_to)
@@ -40,7 +40,8 @@ def get_unbooked_cars_ids(
         .distinct()
         .select_from(all_booked_cars)
         .filter(*conditions)
-        .limit(limit).offset(offset)
+        .limit(limit)
+        .offset(offset)
     )
 
     return unbooked_cars_ids

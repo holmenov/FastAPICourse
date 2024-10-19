@@ -20,15 +20,9 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.add_column(
-        "car_models", sa.Column("car_mark_name", sa.String(length=50), nullable=False)
-    )
-    op.add_column(
-        "car_models", sa.Column("car_model_name", sa.String(length=50), nullable=False)
-    )
-    op.add_column(
-        "car_models", sa.Column("car_model_year", sa.Integer(), nullable=False)
-    )
+    op.add_column("car_models", sa.Column("car_mark_name", sa.String(length=50), nullable=False))
+    op.add_column("car_models", sa.Column("car_model_name", sa.String(length=50), nullable=False))
+    op.add_column("car_models", sa.Column("car_model_year", sa.Integer(), nullable=False))
     op.drop_constraint("car_models_mark_name_fkey", "car_models", type_="foreignkey")
     op.create_foreign_key(None, "car_models", "cars", ["car_mark_name"], ["mark"])
     op.drop_column("car_models", "mark_name")
@@ -43,15 +37,11 @@ def downgrade() -> None:
     )
     op.add_column(
         "car_models",
-        sa.Column(
-            "model_name", sa.VARCHAR(length=50), autoincrement=False, nullable=False
-        ),
+        sa.Column("model_name", sa.VARCHAR(length=50), autoincrement=False, nullable=False),
     )
     op.add_column(
         "car_models",
-        sa.Column(
-            "mark_name", sa.VARCHAR(length=50), autoincrement=False, nullable=False
-        ),
+        sa.Column("mark_name", sa.VARCHAR(length=50), autoincrement=False, nullable=False),
     )
     op.drop_constraint(None, "car_models", type_="foreignkey")
     op.create_foreign_key(

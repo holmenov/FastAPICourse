@@ -6,10 +6,7 @@ from app.api.dependencies import DBDep, UserIdDep
 from app.schemas.bookings import SBookingsAdd, SBookingsAddRequest
 
 
-router = APIRouter(
-    prefix="/bookings",
-    tags=["Бронирование автомобилей"]
-)
+router = APIRouter(prefix="/bookings", tags=["Бронирование автомобилей"])
 
 
 @router.get("/all", summary="Получить все бронирования")
@@ -31,13 +28,15 @@ async def create_booking(db: DBDep, user_id: UserIdDep, data: SBookingsAddReques
     requested_car = await db.car_models.get_one_or_none(id=data.car_id)
     if requested_car is None:
         raise HTTPException(status_code=404, detail="Такого авто не существует")
-    
+
     is_car_booked = await db.bookings.get_filtered_by_time(
         data.car_id, data.date_from, data.date_to
     )
     if is_car_booked:
-        raise HTTPException(status_code=409, detail="Выбранный автомобиль на эти даты уже забронирован")
-    
+        raise HTTPException(
+            status_code=409, detail="Выбранный автомобиль на эти даты уже забронирован"
+        )
+
     _data = SBookingsAdd(user_id=user_id, price=requested_car.price, **data.model_dump())
     booking = await db.bookings.add(_data)
     await db.commit()

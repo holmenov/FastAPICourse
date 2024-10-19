@@ -19,6 +19,5 @@ class CarModelsORM(Base):
     price: Mapped[int]
 
     features: Mapped[list["FeaturesORM"]] = relationship(
-        back_populates="car_models",
-        secondary="cars_features"
+        back_populates="car_models", secondary="cars_features"
     )

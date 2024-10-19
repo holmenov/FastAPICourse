@@ -6,10 +6,7 @@ from app.service.auth import AuthService
 from app.api.dependencies import UserIdDep, DBDep
 
 
-router = APIRouter(
-    prefix="/auth",
-    tags=["Авторизация и аутентификация"]
-)
+router = APIRouter(prefix="/auth", tags=["Авторизация и аутентификация"])
 
 
 @router.post("/register", summary="Регистрация пользователя")

@@ -5,10 +5,7 @@ from app.api.dependencies import DBDep
 from app.schemas.features import SFeaturesData
 
 
-router = APIRouter(
-    prefix="/features",
-    tags=["Особенности автомобилей"]
-)
+router = APIRouter(prefix="/features", tags=["Особенности автомобилей"])
 
 
 @router.get("", summary="Получить все особенности автомобилей")

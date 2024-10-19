@@ -15,11 +15,7 @@ class CarModelsRepository(BaseRepository):
     mapper: DataMapper = CarModelsDataMapper
 
     async def get_one_or_none(self, **filter_by):
-        query = (
-            select(self.model)
-            .options(selectinload(self.model.features))
-            .filter_by(**filter_by)
-        )
+        query = select(self.model).options(selectinload(self.model.features)).filter_by(**filter_by)
         data = await self.session.execute(query)
         model = data.scalars().one_or_none()
         if model is None:
@@ -27,19 +23,23 @@ class CarModelsRepository(BaseRepository):
         return CarsWithRelsMapper.map_to_domain_entity(model)
 
     async def get_filtered_by_time(
-            self,
-            mark_name: str | None,
-            car_model_name: str | None,
-            car_model_year: int | None,
-            date_from: date,
-            date_to: date,
-            limit: int,
-            offset: int,
+        self,
+        mark_name: str | None,
+        car_model_name: str | None,
+        car_model_year: int | None,
+        date_from: date,
+        date_to: date,
+        limit: int,
+        offset: int,
     ):
         unbooked_cars_ids = get_unbooked_cars_ids(
-            mark_name, car_model_name, car_model_year,
-            date_from, date_to,
-            limit, offset,
+            mark_name,
+            car_model_name,
+            car_model_year,
+            date_from,
+            date_to,
+            limit,
+            offset,
         )
 
         query = (
