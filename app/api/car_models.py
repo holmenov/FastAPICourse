@@ -1,14 +1,9 @@
-from asyncio import timeout
-from tkinter.scrolledtext import example
-
 from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Body, Query
 from fastapi.exceptions import HTTPException
 from datetime import date
 
 from app.api.dependencies import PaginationDep, DBDep
-from app.database import async_session_maker
-from app.repositories.car_models import CarModelsRepository
 from app.schemas.car_models import SCarModelsData, SCarModelsPatch, SCarModelsAddRequest, SCarModelsPatchRequest
 from app.schemas.features import SCarsFeaturesData
 

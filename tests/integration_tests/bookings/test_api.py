@@ -28,7 +28,7 @@ async def test_add_and_get_bookings(
     
     response = await authenticated_ac.get("/bookings/me")
     assert response.status_code == 200
-    assert response.json()["success"] == True
+    assert response.json()["success"]
 
 
 @pytest.fixture(scope="session")

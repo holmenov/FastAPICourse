@@ -6,7 +6,6 @@ from app.models.bookings import BookingsORM
 from app.repositories.base import BaseRepository
 from app.repositories.mappers.base import DataMapper
 from app.repositories.mappers.mappers import BookingsDataMapper
-from app.repositories.utils import get_unbooked_cars_ids
 
 
 class BookingsRepository(BaseRepository):

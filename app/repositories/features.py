@@ -2,7 +2,7 @@ from app.models.features import FeaturesORM, CarsFeaturesORM
 from app.repositories.base import BaseRepository
 from app.repositories.mappers.base import DataMapper
 from app.repositories.mappers.mappers import FeaturesDataMapper, CarFeaturesDataMapper
-from app.schemas.features import SFeatures, SCarsFeatures, SCarsFeaturesData
+from app.schemas.features import SCarsFeaturesData
 
 
 class FeaturesRepository(BaseRepository):

@@ -1,7 +1,11 @@
+import typing
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, ForeignKey
 
 from app.database import Base
+
+if typing.TYPE_CHECKING:
+    from app.models import FeaturesORM
 
 
 class CarModelsORM(Base):

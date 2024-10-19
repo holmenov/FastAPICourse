@@ -1,10 +1,8 @@
-from datetime import date
-
 from fastapi_cache.decorator import cache
-from fastapi import APIRouter, Body, Query
+from fastapi import APIRouter, Body
 from fastapi.exceptions import HTTPException
 
-from app.api.dependencies import DBDep, UserIdDep, PaginationDep
+from app.api.dependencies import DBDep, UserIdDep
 from app.schemas.bookings import SBookingsAdd, SBookingsAddRequest
 
 
