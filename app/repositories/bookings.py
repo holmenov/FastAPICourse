@@ -1,11 +1,12 @@
 from datetime import date
-
 from sqlalchemy import select, or_, and_, not_
 
+from app.exceptions import IncorrectDataRentException
 from app.models.bookings import BookingsORM
 from app.repositories.base import BaseRepository
 from app.repositories.mappers.base import DataMapper
 from app.repositories.mappers.mappers import BookingsDataMapper
+from app.schemas.bookings import SBookingsAdd
 
 
 class BookingsRepository(BaseRepository):
@@ -27,3 +28,9 @@ class BookingsRepository(BaseRepository):
 
         result = await self.session.execute(query)
         return [BookingsDataMapper.map_to_domain_entity(model) for model in result.scalars().all()]
+    
+    async def add_booking(self, data: SBookingsAdd):
+        if data.date_from > data.date_to:
+            raise IncorrectDataRentException
+
+        return await self.add(data)

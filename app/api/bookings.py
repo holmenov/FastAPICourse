@@ -3,6 +3,7 @@ from fastapi import APIRouter, Body
 from fastapi.exceptions import HTTPException
 
 from app.api.dependencies import DBDep, UserIdDep
+from app.exceptions import IncorrectDataRentException
 from app.schemas.bookings import SBookingsAdd, SBookingsAddRequest
 
 
@@ -38,6 +39,9 @@ async def create_booking(db: DBDep, user_id: UserIdDep, data: SBookingsAddReques
         )
 
     _data = SBookingsAdd(user_id=user_id, price=requested_car.price, **data.model_dump())
-    booking = await db.bookings.add(_data)
+    try:
+        booking = await db.bookings.add_booking(_data)
+    except IncorrectDataRentException as ex:
+        raise HTTPException(status_code=400, detail=ex.detail)
     await db.commit()
     return {"success": True, "data": booking}

@@ -1,5 +1,7 @@
 from fastapi import APIRouter, HTTPException, Response
+from sqlalchemy.exc import IntegrityError
 
+from app.exceptions import UserAlreadyExistException
 from app.repositories.users import UsersRepository
 from app.schemas.users import SUserRequestAdd, SUserAdd, SUserRequestLogin
 from app.service.auth import AuthService
@@ -19,7 +21,10 @@ async def register_user(data: SUserRequestAdd, db: DBDep):
         last_name=data.last_name,
         nickname=str(data.nickname).lower(),
     )
-    await db.users.add(user_data)
+    try:
+        await db.users.add_user(user_data)
+    except UserAlreadyExistException:
+        raise HTTPException(status_code=409, detail="Пользователь с таким email уже существует")
     await db.commit()
     return {"success": True}
 
