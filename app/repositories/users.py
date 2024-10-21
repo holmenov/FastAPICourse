@@ -18,9 +18,3 @@ class UsersRepository(BaseRepository):
         data = await self.session.execute(query)
         model = data.scalars().one()
         return UsersHashedPasswordDataMapper.map_to_domain_entity(model)
-    
-    async def add_user(self, data: BaseModel):
-        try:
-            return await self.add(data)
-        except IntegrityError:
-            raise UserAlreadyExistException

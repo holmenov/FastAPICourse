@@ -28,9 +28,3 @@ class BookingsRepository(BaseRepository):
 
         result = await self.session.execute(query)
         return [BookingsDataMapper.map_to_domain_entity(model) for model in result.scalars().all()]
-    
-    async def add_booking(self, data: SBookingsAdd):
-        if data.date_from > data.date_to:
-            raise IncorrectDataRentException
-
-        return await self.add(data)
