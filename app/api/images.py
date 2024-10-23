@@ -1,7 +1,6 @@
-import shutil
 from fastapi import APIRouter, UploadFile
 
-from app.tasks.tasks import resize_image
+from app.service.images import ImagesService
 
 
 router = APIRouter(prefix="/images", tags=["Изображения автомобилей"])
@@ -9,9 +8,5 @@ router = APIRouter(prefix="/images", tags=["Изображения автомо�
 
 @router.post("")
 async def upload_image(file: UploadFile):
-    image_path = f"app/static/images/{file.filename}"
-    with open(image_path, "wb+") as new_file:
-        shutil.copyfileobj(file.file, new_file)
-
-    resize_image.delay(image_path)
+    await ImagesService().upload_image(file=file)
     return {"success": True}

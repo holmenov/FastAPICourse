@@ -1,12 +1,10 @@
 from datetime import date
 from sqlalchemy import select, or_, and_, not_
 
-from app.exceptions import IncorrectDataRentException
 from app.models.bookings import BookingsORM
 from app.repositories.base import BaseRepository
 from app.repositories.mappers.base import DataMapper
 from app.repositories.mappers.mappers import BookingsDataMapper
-from app.schemas.bookings import SBookingsAdd
 
 
 class BookingsRepository(BaseRepository):

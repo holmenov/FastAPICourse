@@ -1,11 +1,9 @@
-from pydantic import BaseModel
 from sqlalchemy import select
 from datetime import date
 
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload
 
-from app.exceptions import CarMarkNotFoundException, CarNotFoundException, ObjectNotFoundException
+from app.exceptions import ObjectNotFoundException
 from app.models.car_models import CarModelsORM
 from app.repositories.base import BaseRepository
 from app.repositories.mappers.base import DataMapper

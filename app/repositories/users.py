@@ -1,8 +1,6 @@
-from pydantic import EmailStr, BaseModel
+from pydantic import EmailStr
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
 
-from app.exceptions import UserAlreadyExistException
 from app.models.users import UsersORM
 from app.repositories.base import BaseRepository
 from app.repositories.mappers.base import DataMapper
