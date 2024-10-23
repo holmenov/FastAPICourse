@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import Annotated
 
 from app.database import async_session_maker
+from app.exceptions import IncorrectTokenHTTPException
 from app.service.auth import AuthService
 from app.utils.db_manager import DBManager
 
@@ -20,7 +21,7 @@ PaginationDep = Annotated[PaginationParams, Depends()]
 def get_token(request: Request) -> str:
     access_token = request.cookies.get("access_token")
     if not access_token:
-        raise HTTPException(status_code=401, detail="Вы не аутентифицированы.")
+        raise IncorrectTokenHTTPException
     return access_token
 
 

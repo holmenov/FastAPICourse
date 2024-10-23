@@ -99,3 +99,8 @@ class BookingsNotFoundHTTPException(CarsRentHTTPException):
 class FeatureAlreadyExistHTTPException(CarsRentHTTPException):
     status_code = 409
     detail = "Такая особенность автомобиля уже существует"
+
+
+class IncorrectTokenHTTPException(CarsRentHTTPException):
+    status_code = 401
+    detail = "Некорректный токен"
