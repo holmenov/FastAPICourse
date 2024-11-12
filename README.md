@@ -3,7 +3,7 @@ docker network create mainNetwork
 docker run --name cars_rent_db \
     -p 6432:5432 \
     -e POSTGRES_USER=admin \
-    -e POSTGRES_PASSWORD=yZRGqu7j115@ \
+    -e POSTGRES_PASSWORD=admin \
     -e POSTGRES_DB=cars_rent \
     --network=mainNetwork \
     --volume pg-cars-rent-data:/var/lib/postgresql/data \
@@ -28,3 +28,9 @@ docker run --name cars_rent_celery_beat `
     --network mainNetwork `
     car_rent_image `
     celery --app=app.tasks.celery_app:celery_instance beat -l INFO
+
+docker run --name cars_rent_nginx `
+    --volume ./nginx.conf:/etc/nginx/nginx.conf `
+    --network mainNetwork `
+    -p 80:80
+    -d nginx

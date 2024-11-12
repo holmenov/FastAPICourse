@@ -7,8 +7,6 @@ services:
       - mainNetwork
     env_file:
       - .env
-    ports:
-      - "7777:8000"
 
   cars_rent_celery_worker_service:
     container_name: 'cars_rent_celery_worker'
