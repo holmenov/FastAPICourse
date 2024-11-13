@@ -31,10 +31,10 @@ async def get_car(car_id: int, db: DBDep):
     return {"success": True, "data": data}
 
 
-@router.delete("/{mark_name}", summary="Удалить марку автомобиля")
-async def delete_car(mark_name: str, db: DBDep):
+@router.delete("/{car_id}", summary="Удалить марку автомобиля")
+async def delete_car(car_id: str, db: DBDep):
     try:
-        await CarsService(db).delete_car(mark_name=mark_name)
+        await CarsService(db).delete_car(car_id=car_id)
     except CarNotFoundException:
         raise CarNotFoundHTTPException
     return {"success": True}

@@ -13,9 +13,9 @@ class CarsService(BaseService):
     async def get_car_by_id(self, car_id: int):
         return await self.get_car_with_check(car_id=car_id)
     
-    async def delete_car(self, mark_name: str):
-        await self.get_car_with_check(mark=mark_name)
-        await self.db.cars.delete(mark=mark_name)
+    async def delete_car(self, car_id: str):
+        await self.get_car_with_check(car_id=car_id)
+        await self.db.cars.delete(car_id=car_id)
         await self.db.commit()
     
     async def add_car(self, car_data: SCarsData):

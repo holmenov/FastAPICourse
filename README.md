@@ -29,8 +29,10 @@ docker run --name cars_rent_celery_beat `
     car_rent_image `
     celery --app=app.tasks.celery_app:celery_instance beat -l INFO
 
-docker run --name cars_rent_nginx `
-    --volume ./nginx.conf:/etc/nginx/nginx.conf `
-    --network mainNetwork `
-    -p 80:80
+docker run --name cars_rent_nginx \
+    --volume ./nginx.conf:/etc/nginx/nginx.conf \
+    --volume /etc/letsencrypt:/etc/letsencrypt \
+    --volume /var/lib/letsencrypt:/var/lib/letsencrypt \
+    --network mainNetwork \
+    -p 443:443 \
     -d nginx
