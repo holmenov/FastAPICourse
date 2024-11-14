@@ -1,0 +1,24 @@
+services:
+  cars_rent_back_service:
+    container_name: 'cars_rent_back'
+    image: cars_rent_api:latest
+    networks:
+      - mainNetwork
+
+  cars_rent_celery_worker_service:
+    container_name: 'cars_rent_celery_worker'
+    image: cars_rent_api:latest
+    networks:
+      - mainNetwork
+    command: "celery --app=app.tasks.celery_app:celery_instance worker -l INFO"
+
+  cars_rent_celery_beat_service:
+    container_name: 'cars_rent_celery_beat'
+    image: cars_rent_api:latest
+    networks:
+      - mainNetwork
+    command: "celery --app=app.tasks.celery_app:celery_instance beat -l INFO"
+
+networks:
+  mainNetwork:
+    external: True
