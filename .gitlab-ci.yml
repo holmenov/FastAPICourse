@@ -5,8 +5,8 @@ stages:
 build-job:
   stage: build
   before_script:
-    - cp ${ENV} .env
-    - cp ${TEST_ENV} .env-test
+    - echo "${ENV}" > .env
+    - echo "${TEST_ENV}" > .env-test
   script:
     - docker build -t cars_rent_api .
 
