@@ -11,13 +11,13 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 logging.basicConfig(level=logging.INFO)
 
-from app.init import redis_manager
-from app.api.cars import router as cars_router
-from app.api.car_models import router as car_models_router
-from app.api.auth import router as auth_router
-from app.api.bookings import router as bookings_router
-from app.api.features import router as features_router
-from app.api.images import router as images_router
+from app.init import redis_manager  # noqa: E402
+from app.api.cars import router as cars_router  # noqa: E402
+from app.api.car_models import router as car_models_router  # noqa: E402
+from app.api.auth import router as auth_router  # noqa: E402
+from app.api.bookings import router as bookings_router  # noqa: E402
+from app.api.features import router as features_router  # noqa: E402
+from app.api.images import router as images_router  # noqa: E402
 
 
 @asynccontextmanager

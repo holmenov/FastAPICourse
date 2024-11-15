@@ -6,7 +6,7 @@ from app.service.base import BaseService
 class FeaturesService(BaseService):
     async def get_all_features(self):
         return await self.db.features.get_all()
-    
+
     async def create(self, data: SFeaturesData):
         try:
             feature = await self.db.features.add(data)

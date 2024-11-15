@@ -53,5 +53,5 @@ class CarModelsRepository(BaseRepository):
 
         if not result_scalars:
             raise ObjectNotFoundException
-        
+
         return [CarsWithRelsMapper.map_to_domain_entity(model) for model in result_scalars]

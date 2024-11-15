@@ -1,6 +1,34 @@
 stages:
   - build
+  - lint_format
+  - migrations
+  - test
   - deploy
+
+
+Lint:
+  stage: lint_format
+  script:
+    - docker run --rm --network mainNetwork cars_rent_api ruff check
+
+
+Format:
+  stage: lint_format
+  script:
+    - docker run --rm --network mainNetwork cars_rent_api ruff format --check
+
+
+Migrations:
+  stage: lint_format
+  script:
+    - docker run --rm --network mainNetwork cars_rent_api alembic upgrade head
+
+
+Tests:
+  stage: test
+  script:
+    - docker run --rm --network mainNetwork cars_rent_api pytest -s -v
+
 
 build-job:
   stage: build
@@ -9,6 +37,7 @@ build-job:
     - echo "${TEST_ENV}" > .env-test
   script:
     - docker build -t cars_rent_api .
+
 
 deploy-job:
   stage: deploy

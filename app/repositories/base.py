@@ -26,7 +26,7 @@ class BaseRepository:
         if model is None:
             return None
         return self.mapper.map_to_domain_entity(model)
-    
+
     async def get_one(self, **filter_by):
         query = select(self.model).filter_by(**filter_by)
         data = await self.session.execute(query)
@@ -68,7 +68,7 @@ class BaseRepository:
     async def delete(self, *filter, **filter_by) -> None:
         delete_data_stmt = delete(self.model).filter_by(**filter_by).filter(*filter)
         await self.session.execute(delete_data_stmt)
-    
+
     async def drop_all(self):
         delete_stmt = delete(self.model)
         await self.session.execute(delete_stmt)

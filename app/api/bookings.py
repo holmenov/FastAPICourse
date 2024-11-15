@@ -2,9 +2,14 @@ from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Body
 
 from app.api.dependencies import DBDep, UserIdDep
-from app.exceptions import CarAlreadyBookedHTTPException, \
-    BookingsNotFoundException, BookingsNotFoundHTTPException, CarNotFoundException, CarNotFoundHTTPException, \
-    CarAlreadyBookedException
+from app.exceptions import (
+    CarAlreadyBookedHTTPException,
+    BookingsNotFoundException,
+    BookingsNotFoundHTTPException,
+    CarNotFoundException,
+    CarNotFoundHTTPException,
+    CarAlreadyBookedException,
+)
 from app.schemas.bookings import SBookingsAddRequest
 from app.service.bookings import BookingsService
 

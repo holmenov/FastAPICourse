@@ -3,7 +3,7 @@ from fastapi import HTTPException
 
 class CarsRentException(Exception):
     detail = "Неожиданная ошибка"
-    
+
     def __init__(self, *args):
         super().__init__(self.detail, *args)
 
@@ -30,7 +30,7 @@ class CarAlreadyBookedException(CarsRentException):
 
 class UserAlreadyExistException(CarsRentException):
     detail = "Пользователь с такой почтой уже существует"
-    
+
 
 class UserNotFoundException(CarsRentException):
     detail = "Пользователь не найден"
@@ -56,7 +56,7 @@ def check_date_to_after_date_from(date_from, date_to):
 class CarsRentHTTPException(HTTPException):
     status_code = 500
     detail = "Неожиданная ошибка"
-    
+
     def __init__(self):
         super().__init__(status_code=self.status_code, detail=self.detail)
 

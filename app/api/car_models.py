@@ -7,7 +7,7 @@ from app.exceptions import (
     CarNotFoundHTTPException,
     CarNotFoundException,
     CarAlreadyExistException,
-    CarAlreadyExistHTTPException
+    CarAlreadyExistHTTPException,
 )
 from app.schemas.car_models import SCarModelsAddRequest, SCarModelsPatchRequest
 from app.service.car_models import CarModelsService
@@ -29,12 +29,7 @@ async def get_cars_rent(
 ):
     try:
         data = await CarModelsService(db).get_filtered_by_time(
-            pagination,
-            mark_name,
-            car_model_name,
-            car_model_year,
-            date_from,
-            date_to
+            pagination, mark_name, car_model_name, car_model_year, date_from, date_to
         )
     except CarNotFoundException as ex:
         raise CarNotFoundHTTPException from ex
@@ -83,9 +78,13 @@ async def edit_car(mark_name: str, car_id: int, db: DBDep, car_data: SCarModelsA
 
 
 @router.patch("/{mark_name}/models/{car_id}", summary="Изменить данные об автомобиле частично")
-async def partially_edit_car(mark_name: str, car_id: int, db: DBDep, car_data: SCarModelsPatchRequest):
+async def partially_edit_car(
+    mark_name: str, car_id: int, db: DBDep, car_data: SCarModelsPatchRequest
+):
     try:
-        await CarModelsService(db).partially_edit_car(mark_name=mark_name, car_id=car_id, car_data=car_data)
+        await CarModelsService(db).partially_edit_car(
+            mark_name=mark_name, car_id=car_id, car_data=car_data
+        )
     except CarNotFoundException as ex:
         raise CarNotFoundHTTPException from ex
     return {"success": True}

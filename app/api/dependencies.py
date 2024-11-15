@@ -1,4 +1,4 @@
-from fastapi import Depends, Query, Request, HTTPException
+from fastapi import Depends, Query, Request
 from pydantic import BaseModel
 from typing import Annotated
 
