@@ -5,7 +5,12 @@ from app.exceptions import (
     ObjectAlreadyExistException,
     CarAlreadyExistException,
 )
-from app.schemas.car_models import SCarModelsAddRequest, SCarModelsData, SCarModelsPatchRequest, SCarModelsPatch
+from app.schemas.car_models import (
+    SCarModelsAddRequest,
+    SCarModelsData,
+    SCarModelsPatchRequest,
+    SCarModelsPatch,
+)
 from app.schemas.features import SCarsFeaturesData
 from app.service.base import BaseService
 
